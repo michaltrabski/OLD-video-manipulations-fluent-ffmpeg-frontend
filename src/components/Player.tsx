@@ -13,7 +13,7 @@ export interface Video {
   trimStop: number;
   duration: number;
   // ready: boolean;
-  // play: boolean;
+  play: boolean;
   // currentTime: number;
 }
 interface Props {
@@ -44,6 +44,10 @@ export default function Player(props: Props) {
   useEffect(() => {
     controls.play(video.trimStop);
   }, [video.trimStop]);
+
+  useEffect(() => {
+    if (video.play === false) controls.pause();
+  }, [video.play]);
 
   return (
     <>

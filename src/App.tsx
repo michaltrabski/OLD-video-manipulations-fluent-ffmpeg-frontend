@@ -8,7 +8,7 @@ import video1 from "./videos/video1.mp4";
 import video2 from "./videos/video2.mp4";
 import TrimSlider from "./components/TrimSlider";
 import axios from "axios";
-import { Box } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 
 const ENDPOINT = "http://localhost:3000/";
 
@@ -21,6 +21,7 @@ function App() {
       trimStart: 0,
       trimStop: 0,
       duration: 0,
+      play: false,
     },
     {
       id: "id2",
@@ -28,8 +29,13 @@ function App() {
       trimStart: 0,
       trimStop: 0,
       duration: 0,
+      play: false,
     },
   ]);
+
+  const stopAllVideos = () => {
+    setVideos(videos.map((video) => ({ ...video, play: false })));
+  };
 
   const updateDuration = (id: string, duration: number) => {
     setVideos(
@@ -44,14 +50,18 @@ function App() {
   const updateTrimStart = (id: string, trimStart: number) => {
     // console.log(id, trimStart);
     setVideos(
-      videos.map((video) => (video.id === id ? { ...video, trimStart } : video))
+      videos.map((video) =>
+        video.id === id ? { ...video, trimStart, play: true } : video
+      )
     );
   };
 
   const updateTrimStop = (id: string, trimStop: number) => {
     // console.log(id, trimStart);
     setVideos(
-      videos.map((video) => (video.id === id ? { ...video, trimStop } : video))
+      videos.map((video) =>
+        video.id === id ? { ...video, trimStop, play: true } : video
+      )
     );
   };
 
@@ -78,6 +88,16 @@ function App() {
   return (
     <>
       <CssBaseline />
+      <Box p={2}>
+        <Button
+          className={classes.floatingStopAllVideos}
+          variant="contained"
+          color="secondary"
+          onClick={stopAllVideos}
+        >
+          Stop
+        </Button>
+      </Box>
       <Box p={2}>
         <Grid container spacing={3}>
           {/* left column  */}
@@ -127,6 +147,11 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
       color: theme.palette.text.secondary,
+    },
+    floatingStopAllVideos: {
+      position: "fixed",
+      top: 10,
+      left: 10,
     },
   })
 );

@@ -39,9 +39,13 @@ export const useVideo = (src: string) => {
     play: (currentTime: number) => {
       const audio = ref.current;
       if (!audio) return;
-
       audio.currentTime = currentTime;
       audio.play();
+    },
+    pause: () => {
+      const audio = ref.current;
+      if (!audio) return;
+      audio.pause();
     },
   };
   return { videoElement, videoState, controls };
