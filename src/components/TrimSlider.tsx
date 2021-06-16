@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
@@ -6,48 +6,54 @@ import { Video } from "./Player";
 
 interface Props {
   video: Video;
-  updateVideos: (newVideo: Video) => void;
+  updateTrimStart: (id: string, trimStart: number) => void;
+  updateTrimStop: (id: string, trimStop: number) => void;
 }
 
 export default function TrimSlider(props: Props) {
   const classes = useStyles();
 
-  const { video, updateVideos } = props;
+  const { video, updateTrimStart, updateTrimStop } = props;
   const trimStart = video.trimStart || 0;
   const trimStop = video.trimStop || 0;
+  const duration = video.duration || 0;
 
-  const disabled = false;
+  const startPrev = useRef(trimStart);
+  const stopPrev = useRef(trimStop);
+  // console.log(video);
+  // const disabled = false;
   const marks = [
     {
-      value: trimStart,
+      value: trimStart || 0,
       // label: "0:00",
     },
     {
-      value: trimStop,
+      value: trimStop || 0,
       // label: "3:20",
     },
   ];
 
   const handleChange = (event: any, newValue: number | number[]) => {
     if (newValue instanceof Array) {
-      const [trimStart, trimStop] = newValue;
-      const newVideo = {
-        ...video,
-        trimStart,
-        trimStop,
-        play: false,
-        currentTime: trimStart,
-      };
-      updateVideos(newVideo);
+      const [start, stop] = newValue;
+
+      // START CHANGED
+      if (startPrev.current !== start) updateTrimStart(video.id, start);
+
+      // STOP CHANGED
+      if (stopPrev.current !== stop) updateTrimStop(video.id, stop);
+
+      startPrev.current = start;
+      stopPrev.current = stop;
     }
   };
 
-  const handleCommitedChange = () => {
-    updateVideos({
-      ...video,
-      play: true,
-    });
-  };
+  // const handleCommitedChange = () => {
+  //   updateVideos({
+  //     ...video,
+  //     // play: true,
+  //   });
+  // };
 
   return (
     <div className={classes.root}>
@@ -56,13 +62,13 @@ export default function TrimSlider(props: Props) {
         aria-labelledby="track-inverted-range-slider"
         defaultValue={[trimStart, trimStop]}
         min={0}
-        max={video.duration || 0}
+        max={duration}
         step={1}
-        valueLabelDisplay={disabled ? "off" : "on"}
+        valueLabelDisplay={"on"}
         marks={marks}
-        disabled={disabled}
+        // disabled={disabled}
         onChange={handleChange}
-        onChangeCommitted={handleCommitedChange}
+        // onChangeCommitted={handleCommitedChange}
       />
     </div>
   );

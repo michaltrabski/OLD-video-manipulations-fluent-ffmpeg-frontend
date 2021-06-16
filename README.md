@@ -1,6 +1,30 @@
-# Getting Started with Create React App
+# Video Editing App With React and Typescript
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Backend is made with node and ffmpeg.exe
+
+See it live [xxxxxxxxxxxxxxxxxxxx](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
+
+## Available Scripts
 
 ## Available Scripts
 

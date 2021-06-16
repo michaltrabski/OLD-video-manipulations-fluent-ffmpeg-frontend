@@ -2,57 +2,76 @@ import React, { useCallback, SyntheticEvent, useRef, useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { Box, createStyles, makeStyles, Theme } from "@material-ui/core";
 import TrimSlider from "./TrimSlider";
+import { useVideo } from "../hooks/useVideo";
 
 export interface Video {
   id: string;
-  videoSrc: string;
-  trimStart: null | number;
-  trimStop: null | number;
-  duration: null | number;
-  ready: boolean;
-  play: boolean;
-  currentTime: number;
+  src: string;
+  trimStart: number;
+  trimStop: number;
+  duration: number;
+  // ready: boolean;
+  // play: boolean;
+  // currentTime: number;
 }
 interface Props {
   video: Video;
   updateVideos: (newVideo: Video) => void;
+  updateDuration: (id: string, duration: number) => void;
 }
 export default function Player(props: Props) {
   const classes = useStyles();
 
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { video, updateVideos } = props;
-  const { videoSrc } = video;
+  const { video, updateVideos, updateDuration } = props;
+
+  const { videoElement, videoState, controls } = useVideo(video.src);
+  // console.log(videoState);
 
   useEffect(() => {
-    console.log(video.trimStart);
-    if (videoRef && videoRef.current) {
-      videoRef.current.currentTime = video.currentTime;
-      console.log("cccc", video.play);
-      if (video.play) videoRef.current.play();
+    // console.log("video", video);
+    // console.log("videoState", videoState);
+    if (videoState.duration != null) {
+      updateDuration(video.id, videoState.duration);
     }
-  }, [video]);
+  }, [videoState.duration]);
+
+  useEffect(() => {
+    controls.play(video.trimStart);
+  }, [video.trimStart]);
+
+  useEffect(() => {
+    controls.play(video.trimStop);
+  }, [video.trimStop]);
 
   return (
-    <video
-      ref={videoRef}
-      className={classes.video}
-      controls
-      src={videoSrc}
-      onLoadedData={(loadedData: any) => {
-        const newVideo = { ...video, duration: loadedData.target.duration };
-        updateVideos(newVideo);
-      }}
-    ></video>
+    <>
+      <Box className={classes.videoWrapper}>
+        {videoElement}
+
+        {/* <TrimSlider video={props.video} updateVideos={props.updateVideos} /> */}
+      </Box>
+    </>
   );
+  // <video
+  //   ref={videoRef}
+  //   className={classes.video}
+  //   controls
+  //   src={videoSrc}
+  //   onLoadedData={(loadedData: any) => {
+  //     const newVideo = { ...video, duration: loadedData.target.duration };
+  //     updateVideos(newVideo);
+  //   }}
+  // ></video>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    video: {
-      maxWidth: "100%",
+    videoWrapper: {
+      "&> video": {
+        width: "100%",
+      },
     },
   })
 );

@@ -17,34 +17,52 @@ function App() {
   const [videos, setVideos] = useState<Video[]>([
     {
       id: "id1",
-      videoSrc: video1,
-      trimStart: null,
-      trimStop: null,
-      duration: null,
-      ready: false,
-      play: false,
-      currentTime: 0,
+      src: video1,
+      trimStart: 0,
+      trimStop: 0,
+      duration: 0,
     },
-    // {
-    //   id: "id2",
-    //   videoSrc: video2,
-    //   trimStart: null,
-    //   trimStop: null,
-    //   duration: null,
-    //   ready: false,
-    // },
+    {
+      id: "id2",
+      src: video1,
+      trimStart: 0,
+      trimStop: 0,
+      duration: 0,
+    },
   ]);
 
-  const updateVideos = (newVideo: Video) => {
-    if (!newVideo.duration) return;
-
-    newVideo.trimStart = newVideo.trimStart || 0;
-    newVideo.trimStop = newVideo.trimStop || newVideo.duration;
-    newVideo.ready = true;
-
+  const updateDuration = (id: string, duration: number) => {
     setVideos(
-      videos.map((video) => (video.id === newVideo.id ? newVideo : video))
+      videos.map((video) =>
+        video.id === id
+          ? { ...video, duration, trimStart: 0, trimStop: duration }
+          : video
+      )
     );
+  };
+
+  const updateTrimStart = (id: string, trimStart: number) => {
+    // console.log(id, trimStart);
+    setVideos(
+      videos.map((video) => (video.id === id ? { ...video, trimStart } : video))
+    );
+  };
+
+  const updateTrimStop = (id: string, trimStop: number) => {
+    // console.log(id, trimStart);
+    setVideos(
+      videos.map((video) => (video.id === id ? { ...video, trimStop } : video))
+    );
+  };
+
+  const updateVideos = (newVideo: Video) => {
+    // if (!newVideo.duration) return;
+    // newVideo.trimStart = newVideo.trimStart || 0;
+    // newVideo.trimStop = newVideo.trimStop || newVideo.duration;
+    // newVideo.ready = true;
+    // setVideos(
+    //   videos.map((video) => (video.id === newVideo.id ? newVideo : video))
+    // );
   };
 
   useEffect(() => {
@@ -62,20 +80,32 @@ function App() {
       <CssBaseline />
       <Box p={2}>
         <Grid container spacing={3}>
+          {/* left column  */}
           <Grid item md={6}>
             {videos.map((video) => (
               <Grid key={video.id} container spacing={3}>
                 <Grid item>
                   <Paper className={classes.paper}>
-                    <Player video={video} updateVideos={updateVideos} />
-                    {video.ready && (
-                      <TrimSlider video={video} updateVideos={updateVideos} />
+                    <Player
+                      video={video}
+                      updateVideos={updateVideos}
+                      updateDuration={updateDuration}
+                    />
+
+                    {video.duration && (
+                      <TrimSlider
+                        video={video}
+                        updateTrimStart={updateTrimStart}
+                        updateTrimStop={updateTrimStop}
+                      />
                     )}
                   </Paper>
-                </Grid>{" "}
+                </Grid>
               </Grid>
             ))}
           </Grid>
+
+          {/* right column  */}
           <Grid item md={6}>
             <Paper className={classes.paper}>
               <pre>{JSON.stringify(videos, null, 2)}</pre>
