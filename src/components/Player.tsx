@@ -13,29 +13,32 @@ export interface Video {
   trimStop: number;
   duration: number;
   // ready: boolean;
-  play: boolean;
+  isPlaying: boolean;
   // currentTime: number;
 }
 interface Props {
   video: Video;
   updateVideos: (newVideo: Video) => void;
   updateDuration: (id: string, duration: number) => void;
+  updateisPlaying: (id: string, play: boolean) => void;
 }
 export default function Player(props: Props) {
   const classes = useStyles();
 
-  const { video, updateVideos, updateDuration } = props;
+  const { video, updateVideos, updateDuration, updateisPlaying } = props;
 
   const { videoElement, videoState, controls } = useVideo(video.src);
   // console.log(videoState);
 
   useEffect(() => {
-    // console.log("video", video);
-    // console.log("videoState", videoState);
     if (videoState.duration != null) {
       updateDuration(video.id, videoState.duration);
     }
   }, [videoState.duration]);
+
+  useEffect(() => {
+    updateisPlaying(video.id, videoState.isPlaying === true ? true : false);
+  }, [videoState.isPlaying]);
 
   useEffect(() => {
     controls.play(video.trimStart);
@@ -46,8 +49,8 @@ export default function Player(props: Props) {
   }, [video.trimStop]);
 
   useEffect(() => {
-    if (video.play === false) controls.pause();
-  }, [video.play]);
+    if (video.isPlaying === false) controls.pause();
+  }, [video.isPlaying]);
 
   return (
     <>

@@ -3,15 +3,17 @@ import { createElement, useEffect, useRef, useState } from "react";
 // import { getStorage, setStorage } from "../utils/utils";
 
 interface VideoState {
-  ready: boolean;
-  currentTime: number;
-  duration: null | number;
+  // ready: boolean;
+  // currentTime: number;
+  duration: number;
+  isPlaying: boolean;
 }
 export const useVideo = (src: string) => {
   const [videoState, setVideoState] = useState<VideoState>({
-    ready: false,
-    currentTime: 0,
-    duration: null,
+    // ready: false,
+    // currentTime: 0,
+    duration: 0,
+    isPlaying: false,
   });
 
   const ref = useRef<HTMLVideoElement | null>(null);
@@ -20,13 +22,18 @@ export const useVideo = (src: string) => {
     src,
     ref,
     controls: true,
-    onPlay: () => console.log("onPlay"),
-    onPause: () => console.log("onPause"),
+    onPlay: () => {
+      console.log("onPlay");
+      setVideoState((s) => ({ ...videoState, isPlaying: true }));
+    },
+    onPause: () => {
+      console.log("onPause");
+      setVideoState((s) => ({ ...videoState, isPlaying: false }));
+    },
     onWaiting: () => console.log("onWaiting"),
     onPlaying: () => console.log("onPlaying"),
     onLoadedData: (data: any) => {
       // ugly for just now!
-      //   console.log("onLoadedData", data);
       setVideoState((s) => ({ ...s, duration: data.target.duration }));
     },
     onEnded: () => console.log("onEnded"),
@@ -37,14 +44,14 @@ export const useVideo = (src: string) => {
 
   const controls = {
     play: (currentTime: number) => {
+      if (!ref.current) return;
       const audio = ref.current;
-      if (!audio) return;
       audio.currentTime = currentTime;
       audio.play();
     },
     pause: () => {
+      if (!ref.current) return;
       const audio = ref.current;
-      if (!audio) return;
       audio.pause();
     },
   };

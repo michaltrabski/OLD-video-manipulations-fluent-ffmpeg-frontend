@@ -21,7 +21,7 @@ function App() {
       trimStart: 0,
       trimStop: 0,
       duration: 0,
-      play: false,
+      isPlaying: false,
     },
     {
       id: "id2",
@@ -29,12 +29,18 @@ function App() {
       trimStart: 0,
       trimStop: 0,
       duration: 0,
-      play: false,
+      isPlaying: false,
     },
   ]);
 
   const stopAllVideos = () => {
-    setVideos(videos.map((video) => ({ ...video, play: false })));
+    setVideos(videos.map((video) => ({ ...video, isPlaying: false })));
+  };
+
+  const updateisPlaying = (id: string, isPlaying: boolean) => {
+    setVideos(
+      videos.map((video) => (video.id === id ? { ...video, isPlaying } : video))
+    );
   };
 
   const updateDuration = (id: string, duration: number) => {
@@ -51,7 +57,7 @@ function App() {
     // console.log(id, trimStart);
     setVideos(
       videos.map((video) =>
-        video.id === id ? { ...video, trimStart, play: true } : video
+        video.id === id ? { ...video, trimStart, isPlaying: true } : video
       )
     );
   };
@@ -60,7 +66,7 @@ function App() {
     // console.log(id, trimStart);
     setVideos(
       videos.map((video) =>
-        video.id === id ? { ...video, trimStop, play: true } : video
+        video.id === id ? { ...video, trimStop, isPlaying: true } : video
       )
     );
   };
@@ -110,6 +116,7 @@ function App() {
                       video={video}
                       updateVideos={updateVideos}
                       updateDuration={updateDuration}
+                      updateisPlaying={updateisPlaying}
                     />
 
                     {video.duration && (
