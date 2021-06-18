@@ -14,13 +14,14 @@ export default function TrimSlider(props: Props) {
   const classes = useStyles();
 
   const { video, updateTrimStart, updateTrimStop } = props;
+  // console.log(video);
   const trimStart = video.trimStart || 0;
   const trimStop = video.trimStop || 0;
   const duration = video.duration || 0;
 
   const startPrev = useRef(trimStart);
   const stopPrev = useRef(trimStop);
-  // console.log(video);
+
   // const disabled = false;
   const marks = [
     {
@@ -48,13 +49,6 @@ export default function TrimSlider(props: Props) {
     }
   };
 
-  // const handleCommitedChange = () => {
-  //   updateVideos({
-  //     ...video,
-  //     // play: true,
-  //   });
-  // };
-
   return (
     <div className={classes.root}>
       <Slider
@@ -66,7 +60,6 @@ export default function TrimSlider(props: Props) {
         step={1}
         valueLabelDisplay={"on"}
         marks={marks}
-        // disabled={disabled}
         onChange={handleChange}
         // onChangeCommitted={handleCommitedChange}
       />

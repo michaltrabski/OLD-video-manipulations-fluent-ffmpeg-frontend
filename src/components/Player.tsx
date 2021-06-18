@@ -2,30 +2,48 @@ import React, { useCallback, SyntheticEvent, useRef, useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { Box, createStyles, makeStyles, Theme } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+} from "@material-ui/core";
 import TrimSlider from "./TrimSlider";
 import { useVideo } from "../hooks/useVideo";
+import { resolveTypeReferenceDirective } from "typescript";
+import { dark } from "@material-ui/core/styles/createPalette";
+import { generateKeyPair } from "crypto";
 
 export interface Video {
   id: string;
+  name: string;
   src: string;
   trimStart: number;
   trimStop: number;
   duration: number;
-  // ready: boolean;
   isPlaying: boolean;
-  // currentTime: number;
+  active: boolean;
 }
 interface Props {
   video: Video;
-  updateVideos: (newVideo: Video) => void;
+  i: number;
   updateDuration: (id: string, duration: number) => void;
   updateisPlaying: (id: string, play: boolean) => void;
+  duplicateVideo: (id: string) => void;
+  toogleActive: (id: string) => void;
 }
 export default function Player(props: Props) {
   const classes = useStyles();
 
-  const { video, updateVideos, updateDuration, updateisPlaying } = props;
+  const {
+    video,
+    i,
+    updateDuration,
+    updateisPlaying,
+    duplicateVideo,
+    toogleActive,
+  } = props;
 
   const { videoElement, videoState, controls } = useVideo(video.src);
   // console.log(videoState);
@@ -57,6 +75,27 @@ export default function Player(props: Props) {
       <Box className={classes.videoWrapper}>
         {videoElement}
 
+        <Box className={classes.videoHead}>
+          <Typography variant="h4" component="h2" gutterBottom display="inline">
+            {i + 1}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => duplicateVideo(video.id)}
+          >
+            Duplicate
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => toogleActive(video.id)}
+          >
+            Toogle Active
+          </Button>
+        </Box>
         {/* <TrimSlider video={props.video} updateVideos={props.updateVideos} /> */}
       </Box>
     </>
@@ -76,9 +115,14 @@ export default function Player(props: Props) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoWrapper: {
+      position: "relative",
       "&> video": {
         width: "100%",
       },
+    },
+    videoHead: {
+      position: "absolute",
+      top: 0,
     },
   })
 );
