@@ -43,11 +43,13 @@ function App() {
 
   const produceVideo = () => {
     const dataForBackend = videos.map((video) => ({
+      id: video.id,
       name: video.name,
       trimStart: video.trimStart,
       trimStop: video.trimStop,
     }));
 
+    console.log("sending data => ", dataForBackend);
     axios
       .post(ENDPOINT, dataForBackend)
       .then((res) => console.log(res))
@@ -117,6 +119,15 @@ function App() {
         </Button>
         <Button variant="contained" color="secondary" onClick={produceVideo}>
           Produce Video!!!
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            localStorage.clear();
+            document.location.reload();
+          }}
+        >
+          Clear Data
         </Button>
       </Box>
       <Box mt={10} mb={20}>
