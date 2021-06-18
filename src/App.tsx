@@ -42,12 +42,14 @@ function App() {
   }, []);
 
   const produceVideo = () => {
-    const dataForBackend = videos.map((video) => ({
-      id: video.id,
-      name: video.name,
-      trimStart: video.trimStart,
-      trimStop: video.trimStop,
-    }));
+    const dataForBackend = videos
+      .filter((video) => video.active !== false)
+      .map((video) => ({
+        id: video.id,
+        name: video.name,
+        trimStart: video.trimStart,
+        trimStop: video.trimStop,
+      }));
 
     console.log("sending data => ", dataForBackend);
     axios
