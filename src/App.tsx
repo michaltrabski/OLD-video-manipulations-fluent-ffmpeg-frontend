@@ -4,12 +4,12 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Player, { Video } from "./components/Player";
-import video1 from "./videos/video1.mp4";
 import TrimSlider from "./components/TrimSlider";
 import axios from "axios";
 import { Box, Button } from "@material-ui/core";
 import clsx from "clsx";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import { fakeVideosArr } from "./data/data";
 const { v4: uuidv4 } = require("uuid");
 
 const ENDPOINT = "http://localhost:3000/";
@@ -20,11 +20,15 @@ function App() {
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
 
   useEffect(() => {
+    // if there are video dont make request to not to override those from local storage
     if (videos.length > 0) return;
-    console.log(videos.length);
+
     axios
       .get(ENDPOINT)
       .then((res) => {
+        // if res.data is a string then use a test data fakeVideosArr
+        if (typeof res.data === "string") return setVideos(fakeVideosArr);
+
         setVideos(
           res.data.videos.map((video: string) => ({
             id: video,
@@ -38,7 +42,7 @@ function App() {
           }))
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("err =>", err));
   }, []);
 
   const produceVideo = () => {
@@ -132,7 +136,7 @@ function App() {
           Clear Data
         </Button>
       </Box>
-      <Box mt={10} mb={20}>
+      <Box mt={10} mb={120}>
         <Grid container spacing={3}>
           {/* left column  */}
 

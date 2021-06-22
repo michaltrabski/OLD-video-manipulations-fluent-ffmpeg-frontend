@@ -46,7 +46,9 @@ export default function Player(props: Props) {
   } = props;
 
   const { videoElement, videoState, controls } = useVideo(video.src);
-  // console.log(videoState);
+
+  // initial video setup
+  useEffect(() => controls.currentTime(video.trimStart), []);
 
   useEffect(() => {
     if (videoState.duration != null) {
@@ -58,13 +60,16 @@ export default function Player(props: Props) {
     updateisPlaying(video.id, videoState.isPlaying === true ? true : false);
   }, [videoState.isPlaying]);
 
+  let timeout: any;
   useEffect(() => {
-    controls.play(video.trimStart);
-  }, [video.trimStart]);
-
-  useEffect(() => {
-    controls.play(video.trimStop);
+    if (video.duration !== video.trimStop) {
+      controls.play(video.trimStop - 2);
+      timeout = setTimeout(() => controls.pause(), 2400);
+    }
+    return () => clearTimeout(timeout);
   }, [video.trimStop]);
+
+  useEffect(() => controls.play(video.trimStart), [video.trimStart]);
 
   useEffect(() => {
     if (video.isPlaying === false) controls.pause();
@@ -76,7 +81,13 @@ export default function Player(props: Props) {
         {videoElement}
 
         <Box className={classes.videoHead}>
-          <Typography variant="h4" component="h2" gutterBottom display="inline">
+          <Typography
+            style={{ marginBottom: 0 }}
+            variant="h4"
+            component="h2"
+            gutterBottom
+            display="inline"
+          >
             {i + 1}
           </Typography>
           <Button
@@ -96,20 +107,10 @@ export default function Player(props: Props) {
             Toogle Active
           </Button>
         </Box>
-        {/* <TrimSlider video={props.video} updateVideos={props.updateVideos} /> */}
       </Box>
+      {/* <pre>{JSON.stringify(video, null, 2)}</pre> */}
     </>
   );
-  // <video
-  //   ref={videoRef}
-  //   className={classes.video}
-  //   controls
-  //   src={videoSrc}
-  //   onLoadedData={(loadedData: any) => {
-  //     const newVideo = { ...video, duration: loadedData.target.duration };
-  //     updateVideos(newVideo);
-  //   }}
-  // ></video>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -118,11 +119,17 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "relative",
       "&> video": {
         width: "100%",
+        border: "1px solid black",
       },
     },
     videoHead: {
       position: "absolute",
       top: 0,
+      // backgroundColor: "#f44336",
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
     },
   })
 );

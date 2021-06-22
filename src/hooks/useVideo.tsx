@@ -2,12 +2,14 @@ import { createElement, useRef, useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 
 interface VideoState {
+  audio: any;
   duration: number;
   isPlaying: boolean;
 }
 export const useVideo = (src: string) => {
   console.log("useVideo");
   const [videoState, setVideoState] = useLocalStorage<VideoState>("useVideos", {
+    audio: null,
     duration: 0,
     isPlaying: false,
   });
@@ -34,7 +36,12 @@ export const useVideo = (src: string) => {
       setVideoState((s) => ({ ...s, duration: data.target.duration }));
     },
     onEnded: () => console.log("onEnded"),
-    onTimeUpdate: () => console.log("onTimeUpdate"),
+    onTimeUpdate: (xxx: any) => {
+      // console.log("onTimeUpdate", xxx.target.currentTime, controls);
+      // setTimeout(() => {
+      //   controls.pause();
+      // }, 3333);
+    },
     onDurationChange: () => console.log("onDurationChange"),
     onError: (error) => console.log("error"),
   });
@@ -50,6 +57,11 @@ export const useVideo = (src: string) => {
       if (!ref.current) return;
       const audio = ref.current;
       audio.pause();
+    },
+    currentTime: (currentTime: number) => {
+      if (!ref.current) return;
+      const audio = ref.current;
+      audio.currentTime = currentTime;
     },
   };
   return { videoElement, videoState, controls };

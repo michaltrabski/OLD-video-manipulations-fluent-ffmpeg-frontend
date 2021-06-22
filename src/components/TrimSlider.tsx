@@ -22,15 +22,14 @@ export default function TrimSlider(props: Props) {
   const startPrev = useRef(trimStart);
   const stopPrev = useRef(trimStop);
 
-  // const disabled = false;
   const marks = [
     {
-      value: trimStart || 0,
-      // label: "0:00",
+      value: trimStart,
+      // label: parseFloat(trimStart.toFixed(1)),
     },
     {
-      value: trimStop || 0,
-      // label: "3:20",
+      value: trimStop,
+      // label: parseFloat(trimStop.toFixed(1)),
     },
   ];
 
@@ -52,6 +51,7 @@ export default function TrimSlider(props: Props) {
   return (
     <div className={classes.root}>
       <Slider
+        className={classes.slider}
         track="normal"
         aria-labelledby="track-inverted-range-slider"
         defaultValue={[trimStart, trimStop]}
@@ -74,6 +74,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     margin: {
       height: theme.spacing(3),
+    },
+    slider: {
+      "& > span ": {
+        // backgroundColor: "orange",
+        // transform: "scale(1) translate(4px, 10px)",
+      },
+      "& > span > span": {
+        backgroundColor: theme.palette.primary.main,
+        width: "auto",
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+        transform: "scale(1) translate(-3.5px, 27px)!important",
+      },
+      "& > span > span > span": {
+        backgroundColor: "transparent",
+        width: theme.spacing(3),
+        height: theme.spacing(3),
+      },
     },
   })
 );
