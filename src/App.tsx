@@ -6,10 +6,12 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Player, { Video } from "./components/Player";
 import TrimSlider from "./components/TrimSlider";
 import axios from "axios";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, Container } from "@material-ui/core";
 import clsx from "clsx";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { fakeVideosArr } from "./data/data";
+import Navbar from "./components/Navbar";
+import Card from "./components/Card";
 const { v4: uuidv4 } = require("uuid");
 
 const ENDPOINT = "http://localhost:3000/";
@@ -119,66 +121,83 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Box className={classes.globalControls} zIndex="tooltip">
-        <Button variant="contained" color="primary" onClick={stopAllVideos}>
-          Pause
-        </Button>
-        <Button variant="contained" color="secondary" onClick={produceVideo}>
-          Produce Video!!!
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            localStorage.clear();
-            document.location.reload();
-          }}
-        >
-          Clear Data
-        </Button>
-      </Box>
-      <Box mt={10} mb={120}>
-        <Grid container spacing={3}>
-          {/* left column  */}
+      <Navbar />
 
-          {videos.length > 0
-            ? videos.map((video, i) => (
-                <Grid
-                  key={video.id}
-                  item
-                  xs={12}
-                  md={6}
-                  className={clsx(video.active || classes.notActive)}
-                >
-                  <Paper className={classes.paper}>
-                    <Player
-                      video={video}
-                      i={i}
-                      updateDuration={updateDuration}
-                      updateisPlaying={updateisPlaying}
-                      duplicateVideo={duplicateVideo}
-                      toogleActive={toogleActive}
-                    />
+      <Container>
+        <Box className={classes.globalControls} zIndex="tooltip">
+          <Button variant="contained" color="primary" onClick={stopAllVideos}>
+            Pause
+          </Button>
+          <Button variant="contained" color="secondary" onClick={produceVideo}>
+            Produce Video!!!
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              localStorage.clear();
+              document.location.reload();
+            }}
+          >
+            Clear Data
+          </Button>
+        </Box>
+        <Box mt={10} mb={120}>
+          <Grid container spacing={1}>
+            {/* left column  */}
 
-                    {video.duration && (
-                      <TrimSlider
+            {videos.length > 0
+              ? videos.map((video, i) => (
+                  <Grid
+                    key={video.id}
+                    item
+                    xs={12}
+                    md={6}
+                    className={clsx(video.active || classes.notActive)}
+                  >
+                    {/* <Paper className={classes.paper}> */}
+                    <div>
+                      <Card
                         video={video}
+                        i={i}
+                        updateDuration={updateDuration}
+                        updateisPlaying={updateisPlaying}
+                        duplicateVideo={duplicateVideo}
+                        toogleActive={toogleActive}
                         updateTrimStart={updateTrimStart}
                         updateTrimStop={updateTrimStop}
                       />
-                    )}
-                  </Paper>
-                </Grid>
-              ))
-            : "Waiting for response from: http://localhost:3000/"}
-        </Grid>
 
-        {/* right column  */}
-        {/* <Grid item md={12}>
+                      {/* <Player
+                        video={video}
+                        i={i}
+                        updateDuration={updateDuration}
+                        updateisPlaying={updateisPlaying}
+                        duplicateVideo={duplicateVideo}
+                        toogleActive={toogleActive}
+                      /> */}
+
+                      {/* {video.duration && (
+                        <TrimSlider
+                          video={video}
+                          updateTrimStart={updateTrimStart}
+                          updateTrimStop={updateTrimStop}
+                        />
+                      )} */}
+                      {/* </Paper> */}
+                    </div>
+                  </Grid>
+                ))
+              : "Waiting for response from: http://localhost:3000/"}
+          </Grid>
+
+          {/* right column  */}
+          {/* <Grid item md={12}>
             <Paper className={classes.paper}>
               <pre>{JSON.stringify(videos, null, 2)}</pre>
             </Paper>
           </Grid> */}
-      </Box>
+        </Box>
+      </Container>
     </>
   );
 }
@@ -191,7 +210,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     paper: {
-      padding: theme.spacing(2),
+      // padding: theme.spacing(2),
       color: theme.palette.text.secondary,
     },
     notActive: {

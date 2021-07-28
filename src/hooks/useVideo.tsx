@@ -7,7 +7,7 @@ interface VideoState {
   isPlaying: boolean;
 }
 export const useVideo = (src: string) => {
-  console.log("useVideo");
+  // console.log("useVideo");
   const [videoState, setVideoState] = useLocalStorage<VideoState>("useVideos", {
     audio: null,
     duration: 0,

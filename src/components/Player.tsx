@@ -35,6 +35,9 @@ interface Props {
 }
 export default function Player(props: Props) {
   const classes = useStyles();
+  const tStop = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tStart = useRef<ReturnType<typeof setTimeout> | null>(null);
+  console.log("xxxxxxxxxxxxxxxxx", tStop.current);
 
   const {
     video,
@@ -46,41 +49,52 @@ export default function Player(props: Props) {
   } = props;
 
   const { videoElement, videoState, controls } = useVideo(video.src);
-
+  const { duration, isPlaying } = videoState;
+  const { trimStart, trimStop, isPlaying: playing } = video;
   // initial video setup
-  useEffect(() => controls.currentTime(video.trimStart), []);
+  useEffect(() => controls.currentTime(trimStart), []);
 
   useEffect(() => {
-    if (videoState.duration != null) {
-      updateDuration(video.id, videoState.duration);
+    if (duration != null) updateDuration(video.id, duration);
+  }, [duration]);
+
+  useEffect(() => {
+    updateisPlaying(video.id, isPlaying === true ? true : false);
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (video.duration !== trimStop) {
+      if (tStop.current) clearTimeout(tStop.current);
+      if (tStart.current) clearTimeout(tStart.current);
+      const n = 2;
+      controls.play(trimStop - n);
+      tStop.current = setTimeout(() => controls.pause(), n * 1000 + 400);
     }
-  }, [videoState.duration]);
+    return () => {
+      if (tStop.current) clearTimeout(tStop.current);
+      if (tStart.current) clearTimeout(tStart.current);
+    };
+  }, [trimStop]);
 
   useEffect(() => {
-    updateisPlaying(video.id, videoState.isPlaying === true ? true : false);
-  }, [videoState.isPlaying]);
-
-  let timeout: any;
-  useEffect(() => {
-    if (video.duration !== video.trimStop) {
-      controls.play(video.trimStop - 2);
-      timeout = setTimeout(() => controls.pause(), 2400);
-    }
-    return () => clearTimeout(timeout);
-  }, [video.trimStop]);
-
-  useEffect(() => controls.play(video.trimStart), [video.trimStart]);
+    if (tStart.current) clearTimeout(tStart.current);
+    if (tStop.current) clearTimeout(tStop.current);
+    controls.play(trimStart);
+    const n = trimStop - trimStart;
+    console.log("n = ", n * 1000 + 400);
+    tStart.current = setTimeout(() => controls.pause(), n * 1000 + 400);
+  }, [trimStart]);
 
   useEffect(() => {
-    if (video.isPlaying === false) controls.pause();
-  }, [video.isPlaying]);
+    if (playing === false) controls.pause();
+  }, [playing]);
 
   return (
     <>
       <Box className={classes.videoWrapper}>
         {videoElement}
 
-        <Box className={classes.videoHead}>
+        {/* <Box className={classes.videoHead}>
           <Typography
             style={{ marginBottom: 0 }}
             variant="h4"
@@ -106,7 +120,7 @@ export default function Player(props: Props) {
           >
             Toogle Active
           </Button>
-        </Box>
+        </Box> */}
       </Box>
       {/* <pre>{JSON.stringify(video, null, 2)}</pre> */}
     </>
@@ -117,9 +131,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoWrapper: {
       position: "relative",
+      // border: "3px solid green",
       "&> video": {
         width: "100%",
-        border: "1px solid black",
+        // border: "1px solid black",
       },
     },
     videoHead: {
