@@ -25,11 +25,11 @@ export default function TrimSlider(props: Props) {
   const marks = [
     {
       value: trimStart,
-      // label: parseFloat(trimStart.toFixed(1)),
+      label: parseFloat(trimStart.toFixed(1)),
     },
     {
       value: trimStop,
-      // label: parseFloat(trimStop.toFixed(1)),
+      label: parseFloat(trimStop.toFixed(1)),
     },
   ];
 

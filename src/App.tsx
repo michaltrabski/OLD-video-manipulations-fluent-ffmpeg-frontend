@@ -17,7 +17,7 @@ const { v4: uuidv4 } = require("uuid");
 const ENDPOINT = "http://localhost:3000/";
 
 function App() {
-  console.log("app");
+  // console.log("app");
   const classes = useStyles();
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
 
@@ -62,6 +62,24 @@ function App() {
       .post(ENDPOINT, dataForBackend)
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
+  };
+
+  const moveVideoRight = (id: string) => {
+    const index = videos.findIndex((video) => video.id === id);
+    const before = videos.slice(0, index);
+    const current = videos[index];
+    const next = videos[index + 1];
+    const after = videos.slice(index + 2, videos.length);
+    setVideos([...before, next, current, ...after]);
+  };
+
+  const moveVideoLeft = (id: string) => {
+    const index = videos.findIndex((video) => video.id === id);
+    const before = videos.slice(0, index - 1);
+    const current = videos[index];
+    const prev = videos[index - 1];
+    const after = videos.slice(index + 1, videos.length);
+    setVideos([...before, current, prev, ...after]);
   };
 
   const toogleActive = (id: string) => {
@@ -158,6 +176,7 @@ function App() {
                     <div>
                       <Card
                         video={video}
+                        count={videos.length}
                         i={i}
                         updateDuration={updateDuration}
                         updateisPlaying={updateisPlaying}
@@ -165,6 +184,8 @@ function App() {
                         toogleActive={toogleActive}
                         updateTrimStart={updateTrimStart}
                         updateTrimStop={updateTrimStop}
+                        moveVideoRight={moveVideoRight}
+                        moveVideoLeft={moveVideoLeft}
                       />
 
                       {/* <Player

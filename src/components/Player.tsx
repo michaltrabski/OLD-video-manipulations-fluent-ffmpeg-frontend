@@ -37,7 +37,7 @@ export default function Player(props: Props) {
   const classes = useStyles();
   const tStop = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tStart = useRef<ReturnType<typeof setTimeout> | null>(null);
-  console.log("xxxxxxxxxxxxxxxxx", tStop.current);
+  // console.log("xxxxxxxxxxxxxxxxx", tStop.current);
 
   const {
     video,

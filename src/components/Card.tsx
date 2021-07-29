@@ -9,6 +9,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Player, { Video } from "./Player";
 import TrimSlider from "./TrimSlider";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const useStyles = makeStyles({
   root: {},
@@ -16,6 +18,7 @@ const useStyles = makeStyles({
 
 interface Props {
   video: Video;
+  count: number;
   i: number;
   updateDuration: (id: string, duration: number) => void;
   updateisPlaying: (id: string, play: boolean) => void;
@@ -23,6 +26,8 @@ interface Props {
   toogleActive: (id: string) => void;
   updateTrimStart: (id: string, trimStart: number) => void;
   updateTrimStop: (id: string, trimStop: number) => void;
+  moveVideoRight: (id: string) => void;
+  moveVideoLeft: (id: string) => void;
 }
 
 export default function Card(props: Props) {
@@ -63,6 +68,7 @@ export default function Card(props: Props) {
       </CardContent>
       {/* {JSON.stringify(props.video)} */}
       <CardActions>
+        <strong>{props.i + 1}</strong>
         <Button
           variant="contained"
           color="primary"
@@ -81,9 +87,22 @@ export default function Card(props: Props) {
           {props.video.active ? "Deactivate" : "Activate"}
         </Button>
 
-        {/* <Button size="small" color="primary">
-          Learn More
-        </Button> */}
+        <Button
+          size="small"
+          color="primary"
+          disabled={props.i === 0}
+          onClick={() => props.moveVideoLeft(props.video.id)}
+        >
+          <ArrowBackIcon />
+        </Button>
+        <Button
+          size="small"
+          color="primary"
+          disabled={props.i + 1 === props.count}
+          onClick={() => props.moveVideoRight(props.video.id)}
+        >
+          <ArrowForwardIcon />
+        </Button>
       </CardActions>
     </CardMui>
   );
