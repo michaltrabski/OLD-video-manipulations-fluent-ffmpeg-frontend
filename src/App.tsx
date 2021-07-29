@@ -123,7 +123,9 @@ function App() {
   const updateTrimStart = (id: string, trimStart: number) => {
     setVideos(
       videos.map((video) =>
-        video.id === id ? { ...video, trimStart, isPlaying: true } : video
+        video.id === id
+          ? { ...video, trimStart, isPlaying: true, isManuallyTrimmed: true }
+          : video
       )
     );
   };
@@ -131,9 +133,26 @@ function App() {
   const updateTrimStop = (id: string, trimStop: number) => {
     setVideos(
       videos.map((video) =>
-        video.id === id ? { ...video, trimStop, isPlaying: true } : video
+        video.id === id
+          ? { ...video, trimStop, isPlaying: true, isManuallyTrimmed: true }
+          : video
       )
     );
+  };
+
+  const randomTrim = () => {
+    const trimmedVideos = videos.map((v) => {
+      if (v.isManuallyTrimmed) return v;
+      console.log(v.trimStart, v.trimStop);
+      const trimBy = v.duration * 0.2;
+      const newVideo = {
+        ...v,
+        trimStart: trimBy,
+        trimStop: v.duration - trimBy,
+      };
+      return newVideo;
+    });
+    setVideos(trimmedVideos);
   };
 
   return (
@@ -142,6 +161,8 @@ function App() {
       <Navbar />
 
       <Container>
+        <button onClick={randomTrim}>random trim</button>
+        <pre>{JSON.stringify(videos, null, 2)}</pre>
         <Box className={classes.globalControls} zIndex="tooltip">
           <Button variant="contained" color="primary" onClick={stopAllVideos}>
             Pause

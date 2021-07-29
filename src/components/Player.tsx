@@ -24,6 +24,7 @@ export interface Video {
   duration: number;
   isPlaying: boolean;
   active: boolean;
+  isManuallyTrimmed: boolean;
 }
 interface Props {
   video: Video;

@@ -11,6 +11,7 @@ export const fakeVideosArr = [
     duration: 0,
     isPlaying: false,
     active: true,
+    isManuallyTrimmed: false,
   },
   {
     id: "id2",
@@ -21,5 +22,6 @@ export const fakeVideosArr = [
     duration: 0,
     isPlaying: false,
     active: true,
+    isManuallyTrimmed: false,
   },
 ];
