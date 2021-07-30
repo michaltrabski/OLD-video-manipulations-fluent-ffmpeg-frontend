@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,25 +22,60 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Navbar() {
+interface Props {
+  stopAllVideos: () => void;
+  produceVideo: () => void;
+  randomTrim: () => void;
+}
+
+export default function Navbar(props: Props) {
   const classes = useStyles();
+
+  const trimAndStopAll = () => {
+    props.randomTrim();
+  };
+
+  useEffect(() => {
+    props.stopAllVideos();
+  }, []);
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="menu"
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" className={classes.title}>
-            News
+            Edit Videos Online
           </Typography>
-          <Button color="inherit">Login</Button>
+
+          <Button color="inherit" onClick={trimAndStopAll}>
+            Random Trim
+          </Button>
+
+          <Button color="inherit" onClick={props.stopAllVideos}>
+            STOP
+          </Button>
+
+          <Button color="inherit" onClick={props.produceVideo}>
+            Produce
+          </Button>
+
+          <Button
+            color="inherit"
+            onClick={() => {
+              localStorage.clear();
+              document.location.reload();
+            }}
+          >
+            Clear Data
+          </Button>
         </Toolbar>
       </AppBar>
     </div>

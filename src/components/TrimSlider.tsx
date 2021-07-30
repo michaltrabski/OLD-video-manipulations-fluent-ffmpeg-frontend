@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
 import { Video } from "./Player";
 
@@ -22,13 +21,15 @@ export default function TrimSlider(props: Props) {
   const startPrev = useRef(trimStart);
   const stopPrev = useRef(trimStop);
 
+  console.log(1, trimStart, trimStop);
+
   const marks = [
     {
-      value: trimStart,
+      value: parseFloat(trimStart.toFixed(1)),
       label: parseFloat(trimStart.toFixed(1)),
     },
     {
-      value: trimStop,
+      value: parseFloat(trimStop.toFixed(1)),
       label: parseFloat(trimStop.toFixed(1)),
     },
   ];

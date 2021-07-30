@@ -143,14 +143,12 @@ function App() {
   const randomTrim = () => {
     const trimmedVideos = videos.map((v) => {
       if (v.isManuallyTrimmed) return v;
-      console.log(v.trimStart, v.trimStop);
-      const trimBy = v.duration * 0.2;
-      const newVideo = {
-        ...v,
-        trimStart: trimBy,
-        trimStop: v.duration - trimBy,
-      };
-      return newVideo;
+
+      const trimBy = v.duration * 0.2 + Math.random() * v.duration * 0.2;
+      const trimStart = parseFloat(trimBy.toFixed(1));
+      const trimStop = parseFloat((v.duration - trimBy).toFixed(1));
+
+      return { ...v, trimStart, trimStop };
     });
     setVideos(trimmedVideos);
   };
@@ -158,28 +156,15 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Navbar />
+      <Navbar
+        stopAllVideos={stopAllVideos}
+        produceVideo={produceVideo}
+        randomTrim={randomTrim}
+      />
 
       <Container>
-        <button onClick={randomTrim}>random trim</button>
-        <pre>{JSON.stringify(videos, null, 2)}</pre>
-        <Box className={classes.globalControls} zIndex="tooltip">
-          <Button variant="contained" color="primary" onClick={stopAllVideos}>
-            Pause
-          </Button>
-          <Button variant="contained" color="secondary" onClick={produceVideo}>
-            Produce Video!!!
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              localStorage.clear();
-              document.location.reload();
-            }}
-          >
-            Clear Data
-          </Button>
-        </Box>
+        {/* <pre>{JSON.stringify(videos, null, 2)}</pre> */}
+
         <Box mt={10} mb={120}>
           <Grid container spacing={1}>
             {/* left column  */}
