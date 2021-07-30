@@ -17,7 +17,6 @@ const { v4: uuidv4 } = require("uuid");
 const ENDPOINT = "http://localhost:3000/";
 
 function App() {
-  // console.log("app");
   const classes = useStyles();
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
 
@@ -44,7 +43,10 @@ function App() {
           }))
         );
       })
-      .catch((err) => console.log("err =>", err));
+      .catch((err) => {
+        console.log("err =>", err);
+        setVideos(fakeVideosArr);
+      });
   }, []);
 
   const produceVideo = () => {
