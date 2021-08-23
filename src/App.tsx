@@ -16,10 +16,16 @@ const { v4: uuidv4 } = require("uuid");
 
 const ENDPOINT = "http://localhost:3000/";
 
+type Cols = 1 | 2 | 3 | 4 | 6 | 12;
+
 function App() {
   const classes = useStyles();
-  const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
 
+  const [limit, setLimit] = useState(3);
+  const cols: Cols[] = [1, 2, 3, 4, 6, 12];
+  const [col, setCol] = useLocalStorage<Cols>("col", cols[0]);
+  const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
+  console.log(cols, col);
   useEffect(() => {
     // if there are video dont make request to not to override those from local storage
     if (videos.length > 0) return;
@@ -47,7 +53,7 @@ function App() {
         console.log("err =>", err);
         setVideos(fakeVideosArr);
       });
-  }, []);
+  }, [videos.length, setVideos]);
 
   const produceVideo = () => {
     const dataForBackend = videos
@@ -166,18 +172,29 @@ function App() {
 
       <Container>
         {/* <pre>{JSON.stringify(videos, null, 2)}</pre> */}
-
-        <Box mt={10} mb={120}>
+        <Box mt={1} mb={1}>
+          {cols.map((c) => (
+            <Button
+              className={classes.mr}
+              variant="contained"
+              color={c === col ? "primary" : "default"}
+              onClick={() => setCol(c)}
+            >
+              {c}
+            </Button>
+          ))}
+        </Box>
+        <Box mt={0} mb={120}>
           <Grid container spacing={1}>
             {/* left column  */}
 
             {videos.length > 0
-              ? videos.map((video, i) => (
+              ? videos.slice(0, limit).map((video, i) => (
                   <Grid
                     key={video.id}
                     item
                     xs={12}
-                    md={6}
+                    md={col}
                     className={clsx(video.active || classes.notActive)}
                   >
                     {/* <Paper className={classes.paper}> */}
@@ -195,24 +212,6 @@ function App() {
                         moveVideoRight={moveVideoRight}
                         moveVideoLeft={moveVideoLeft}
                       />
-
-                      {/* <Player
-                        video={video}
-                        i={i}
-                        updateDuration={updateDuration}
-                        updateisPlaying={updateisPlaying}
-                        duplicateVideo={duplicateVideo}
-                        toogleActive={toogleActive}
-                      /> */}
-
-                      {/* {video.duration && (
-                        <TrimSlider
-                          video={video}
-                          updateTrimStart={updateTrimStart}
-                          updateTrimStop={updateTrimStop}
-                        />
-                      )} */}
-                      {/* </Paper> */}
                     </div>
                   </Grid>
                 ))
@@ -225,6 +224,16 @@ function App() {
               <pre>{JSON.stringify(videos, null, 2)}</pre>
             </Paper>
           </Grid> */}
+          <Box mt={1}>
+            <Button
+              fullWidth
+              variant="contained"
+              // color={c === col ? "primary" : "default"}
+              onClick={() => setLimit((p) => p + 10)}
+            >
+              Load more videos
+            </Button>
+          </Box>
         </Box>
       </Container>
     </>
@@ -251,6 +260,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: "10px 20px",
       backgroundColor: "gray",
       width: "100%",
+    },
+    mr: {
+      marginRight: "0.4rem",
     },
   })
 );
