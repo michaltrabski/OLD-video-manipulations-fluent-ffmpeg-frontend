@@ -25,6 +25,7 @@ export interface Video {
   isPlaying: boolean;
   active: boolean;
   isManuallyTrimmed: boolean;
+  rotate: number;
 }
 interface Props {
   video: Video;
@@ -67,9 +68,9 @@ export default function Player(props: Props) {
     if (video.duration !== trimStop) {
       if (tStop.current) clearTimeout(tStop.current);
       if (tStart.current) clearTimeout(tStart.current);
-      const n = 2;
+      const n = 1;
       controls.play(trimStop - n);
-      tStop.current = setTimeout(() => controls.pause(), n * 1000 + 400);
+      tStop.current = setTimeout(() => controls.pause(), n * 1000 - 500);
     }
     return () => {
       if (tStop.current) clearTimeout(tStop.current);
@@ -83,16 +84,19 @@ export default function Player(props: Props) {
     controls.play(trimStart);
     const n = trimStop - trimStart;
     console.log("n = ", n * 1000 + 400);
-    tStart.current = setTimeout(() => controls.pause(), n * 1000 + 400);
+    tStart.current = setTimeout(() => controls.pause(), n * 1000 - 500);
   }, [trimStart]);
 
   useEffect(() => {
     if (playing === false) controls.pause();
-  }, [playing]);
+  }, [playing, controls]);
 
   return (
     <>
-      <Box className={classes.videoWrapper}>
+      <Box
+        style={{ transform: `rotate(${video.rotate}deg)` }}
+        className={classes.videoWrapper}
+      >
         {videoElement}
 
         {/* <Box className={classes.videoHead}>

@@ -19,7 +19,7 @@ export const useVideo = (src: string) => {
   const videoElement = createElement("video", {
     src,
     ref,
-    controls: true,
+    controls: false,
     onPlay: () => {
       console.log("onPlay");
       setVideoState((s) => ({ ...videoState, isPlaying: true }));

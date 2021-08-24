@@ -11,6 +11,10 @@ import Player, { Video } from "./Player";
 import TrimSlider from "./TrimSlider";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import TextRotateUpIcon from "@material-ui/icons/TextRotateUp";
+import TextRotationDownIcon from "@material-ui/icons/TextRotationDown";
+import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 
 const useStyles = makeStyles({
   root: {},
@@ -20,6 +24,7 @@ interface Props {
   video: Video;
   count: number;
   i: number;
+  hideTrimSliderInfo: boolean;
   updateDuration: (id: string, duration: number) => void;
   updateisPlaying: (id: string, play: boolean) => void;
   duplicateVideo: (id: string) => void;
@@ -28,6 +33,7 @@ interface Props {
   updateTrimStop: (id: string, trimStop: number) => void;
   moveVideoRight: (id: string) => void;
   moveVideoLeft: (id: string) => void;
+  rotate: (id: string) => void;
 }
 
 export default function Card(props: Props) {
@@ -61,6 +67,7 @@ export default function Card(props: Props) {
         {props.video.duration && (
           <TrimSlider
             video={props.video}
+            hideTrimSliderInfo={props.hideTrimSliderInfo}
             updateTrimStart={props.updateTrimStart}
             updateTrimStop={props.updateTrimStop}
           />
@@ -70,23 +77,24 @@ export default function Card(props: Props) {
       <CardActions>
         <strong>{props.i + 1}</strong>
         <Button
-          variant="contained"
+          // variant="contained"
           color="primary"
           size="small"
           onClick={() => props.duplicateVideo(props.video.id)}
           disabled={!props.video.active}
         >
-          Duplicate
+          <FileCopyIcon />
+          {/* Duplicate */}
         </Button>
         <Button
-          variant="contained"
+          // variant="contained"
           color={props.video.active ? "secondary" : "primary"}
           size="small"
           onClick={() => props.toogleActive(props.video.id)}
         >
-          {props.video.active ? "Deactivate" : "Activate"}
+          {/* {props.video.active ? "Deactivate" : "Activate"} */}
+          <RemoveCircleOutlineIcon />
         </Button>
-
         <Button
           size="small"
           color="primary"
@@ -102,6 +110,14 @@ export default function Card(props: Props) {
           onClick={() => props.moveVideoRight(props.video.id)}
         >
           <ArrowForwardIcon />
+        </Button>
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => props.rotate(props.video.id)}
+        >
+          {props.video.rotate === 0 && <TextRotateUpIcon />}
+          {props.video.rotate === 180 && <TextRotationDownIcon />}
         </Button>
       </CardActions>
     </CardMui>

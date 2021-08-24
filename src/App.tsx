@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Player, { Video } from "./components/Player";
-import TrimSlider from "./components/TrimSlider";
+import { Video } from "./components/Player";
 import axios from "axios";
 import { Box, Button, Container } from "@material-ui/core";
 import clsx from "clsx";
@@ -20,12 +18,12 @@ type Cols = 1 | 2 | 3 | 4 | 6 | 12;
 
 function App() {
   const classes = useStyles();
-
+  const [hideTrimSliderInfo, setHideTrimSliderInfo] = useState(true);
   const [limit, setLimit] = useState(3);
   const cols: Cols[] = [1, 2, 3, 4, 6, 12];
-  const [col, setCol] = useLocalStorage<Cols>("col", cols[0]);
+  const [col, setCol] = useLocalStorage<Cols>("col", cols[3]);
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
-  console.log(cols, col);
+
   useEffect(() => {
     // if there are video dont make request to not to override those from local storage
     if (videos.length > 0) return;
@@ -56,15 +54,13 @@ function App() {
   }, [videos.length, setVideos]);
 
   const produceVideo = () => {
-    const dataForBackend = videos
-      .filter((video) => video.active !== false)
-      .map((video) => ({
-        id: video.id,
-        name: video.name,
-        trimStart: video.trimStart,
-        trimStop: video.trimStop,
-      }));
-
+    const dataForBackend = videos.filter((video) => video.active !== false);
+    // .map((video) => ({
+    //   id: video.id,
+    //   name: video.name,
+    //   trimStart: video.trimStart,
+    //   trimStop: video.trimStop,
+    // }));
     console.log("sending data => ", dataForBackend);
     axios
       .post(ENDPOINT, dataForBackend)
@@ -107,7 +103,6 @@ function App() {
     const videosBefore = videos.slice(0, index + 1);
     const duplicate = { ...videos[index] };
     duplicate.id = uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
-
     const videosAfter = videos.slice(index + 1);
     setVideos([...videosBefore, duplicate, ...videosAfter]);
   };
@@ -148,17 +143,24 @@ function App() {
     );
   };
 
+  const rotate = (id: string) => {
+    const item = videos.find((video) => video.id === id);
+    const rotate = item?.rotate === 0 ? 180 : 0;
+    setVideos(
+      videos.map((video) => (video.id === id ? { ...video, rotate } : video))
+    );
+  };
+
   const randomTrim = () => {
     const trimmedVideos = videos.map((v) => {
       if (v.isManuallyTrimmed) return v;
-
       const trimBy = v.duration * 0.2 + Math.random() * v.duration * 0.2;
       const trimStart = parseFloat(trimBy.toFixed(1));
       const trimStop = parseFloat((v.duration - trimBy).toFixed(1));
-
       return { ...v, trimStart, trimStop };
     });
     setVideos(trimmedVideos);
+    document.location.reload();
   };
 
   return (
@@ -184,10 +186,9 @@ function App() {
             </Button>
           ))}
         </Box>
+
         <Box mt={0} mb={120}>
           <Grid container spacing={1}>
-            {/* left column  */}
-
             {videos.length > 0
               ? videos.slice(0, limit).map((video, i) => (
                   <Grid
@@ -197,12 +198,12 @@ function App() {
                     md={col}
                     className={clsx(video.active || classes.notActive)}
                   >
-                    {/* <Paper className={classes.paper}> */}
                     <div>
                       <Card
                         video={video}
                         count={videos.length}
                         i={i}
+                        hideTrimSliderInfo={hideTrimSliderInfo}
                         updateDuration={updateDuration}
                         updateisPlaying={updateisPlaying}
                         duplicateVideo={duplicateVideo}
@@ -211,6 +212,7 @@ function App() {
                         updateTrimStop={updateTrimStop}
                         moveVideoRight={moveVideoRight}
                         moveVideoLeft={moveVideoLeft}
+                        rotate={rotate}
                       />
                     </div>
                   </Grid>
@@ -218,22 +220,17 @@ function App() {
               : "Waiting for response from: http://localhost:3000/"}
           </Grid>
 
-          {/* right column  */}
-          {/* <Grid item md={12}>
-            <Paper className={classes.paper}>
-              <pre>{JSON.stringify(videos, null, 2)}</pre>
-            </Paper>
-          </Grid> */}
-          <Box mt={1}>
-            <Button
-              fullWidth
-              variant="contained"
-              // color={c === col ? "primary" : "default"}
-              onClick={() => setLimit((p) => p + 10)}
-            >
-              Load more videos
-            </Button>
-          </Box>
+          {videos.length > limit && (
+            <Box mt={1}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => setLimit((p) => p + 10)}
+              >
+                Load more videos from {videos.length} {limit}
+              </Button>
+            </Box>
+          )}
         </Box>
       </Container>
     </>

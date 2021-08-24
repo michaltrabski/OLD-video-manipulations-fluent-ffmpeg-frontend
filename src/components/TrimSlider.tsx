@@ -5,6 +5,7 @@ import { Video } from "./Player";
 
 interface Props {
   video: Video;
+  hideTrimSliderInfo: boolean;
   updateTrimStart: (id: string, trimStart: number) => void;
   updateTrimStop: (id: string, trimStop: number) => void;
 }
@@ -59,8 +60,7 @@ export default function TrimSlider(props: Props) {
         min={0}
         max={duration}
         step={1}
-        valueLabelDisplay={"on"}
-        marks={marks}
+        valueLabelDisplay={props.hideTrimSliderInfo ? "off" : "on"}
         onChange={handleChange}
         // onChangeCommitted={handleCommitedChange}
       />
