@@ -73,7 +73,7 @@ export default function Card(props: Props) {
           />
         )}
       </CardContent>
-      <pre>{JSON.stringify(props.video, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(props.video, null, 2)}</pre> */}
 
       <CardActions>
         <strong>{props.i + 1}</strong>

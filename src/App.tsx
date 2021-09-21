@@ -19,7 +19,7 @@ type Cols = 1 | 2 | 3 | 4 | 6 | 12;
 function App() {
   const classes = useStyles();
   const [hideTrimSliderInfo, setHideTrimSliderInfo] = useState(true);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(1000); // it makes roblem => videos that are not loaded direcly doesnt get durations.
   const cols: Cols[] = [1, 2, 3, 4, 6, 12];
   const [col, setCol] = useLocalStorage<Cols>("col", cols[3]);
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);

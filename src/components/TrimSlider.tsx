@@ -52,20 +52,22 @@ export default function TrimSlider(props: Props) {
 
   return (
     <div className={classes.root}>
-      <p>----------</p>
-      <Slider
-        className={classes.slider}
-        track="normal"
-        aria-labelledby="track-inverted-range-slider"
-        defaultValue={[trimStart, trimStop]}
-        min={0}
-        max={duration}
-        step={1}
-        valueLabelDisplay={props.hideTrimSliderInfo ? "off" : "on"}
-        onChange={handleChange}
-        // onChangeCommitted={handleCommitedChange}
-      />
-      <p>----------</p>
+      {duration === 0 ? (
+        <p>Duration is O!!!</p>
+      ) : (
+        <Slider
+          className={classes.slider}
+          track="normal"
+          aria-labelledby="track-inverted-range-slider"
+          defaultValue={[trimStart, trimStop]}
+          min={0}
+          max={duration}
+          step={1}
+          valueLabelDisplay={props.hideTrimSliderInfo ? "off" : "on"}
+          onChange={handleChange}
+          // onChangeCommitted={handleCommitedChange}
+        />
+      )}
     </div>
   );
 }
