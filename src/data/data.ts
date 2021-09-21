@@ -1,7 +1,10 @@
 import video1 from "../videos/video1.mp4";
 import video2 from "../videos/video2.mp4";
 
-const video = {
+export const videoShema = {
+  id: "",
+  name: "",
+  src: "",
   trimStart: 0,
   trimStop: 0,
   duration: 0,
@@ -13,13 +16,13 @@ const video = {
 
 export const fakeVideosArr = [
   {
-    ...video,
+    ...videoShema,
     id: "id1",
     name: video1,
     src: video1,
   },
   {
-    ...video,
+    ...videoShema,
     id: "id2",
     name: video2,
     src: video2,

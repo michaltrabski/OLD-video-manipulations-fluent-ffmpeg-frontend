@@ -7,7 +7,7 @@ import axios from "axios";
 import { Box, Button, Container } from "@material-ui/core";
 import clsx from "clsx";
 import { useLocalStorage } from "./hooks/useLocalStorage";
-import { fakeVideosArr } from "./data/data";
+import { fakeVideosArr, videoShema } from "./data/data";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
 const { v4: uuidv4 } = require("uuid");
@@ -40,14 +40,10 @@ function App() {
         console.log(2, "res.data => ", res.data);
         setVideos(
           res.data.videos.map((video: string) => ({
+            ...videoShema,
             id: video,
             name: video,
             src: ENDPOINT + video,
-            trimStart: 0,
-            trimStop: 0,
-            duration: 0,
-            isPlaying: false,
-            active: true,
           }))
         );
       })
