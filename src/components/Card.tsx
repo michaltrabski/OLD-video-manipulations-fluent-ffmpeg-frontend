@@ -73,7 +73,8 @@ export default function Card(props: Props) {
           />
         )}
       </CardContent>
-      {/* {JSON.stringify(props.video)} */}
+      <pre>{JSON.stringify(props.video, null, 2)}</pre>
+
       <CardActions>
         <strong>{props.i + 1}</strong>
         <Button
@@ -84,15 +85,12 @@ export default function Card(props: Props) {
           disabled={!props.video.active}
         >
           <FileCopyIcon />
-          {/* Duplicate */}
         </Button>
         <Button
-          // variant="contained"
           color={props.video.active ? "secondary" : "primary"}
           size="small"
           onClick={() => props.toogleActive(props.video.id)}
         >
-          {/* {props.video.active ? "Deactivate" : "Activate"} */}
           <RemoveCircleOutlineIcon />
         </Button>
         <Button

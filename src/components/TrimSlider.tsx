@@ -52,6 +52,7 @@ export default function TrimSlider(props: Props) {
 
   return (
     <div className={classes.root}>
+      <p>----------</p>
       <Slider
         className={classes.slider}
         track="normal"
@@ -64,6 +65,7 @@ export default function TrimSlider(props: Props) {
         onChange={handleChange}
         // onChangeCommitted={handleCommitedChange}
       />
+      <p>----------</p>
     </div>
   );
 }
