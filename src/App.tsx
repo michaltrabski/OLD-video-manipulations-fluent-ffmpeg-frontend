@@ -31,9 +31,13 @@ function App() {
     axios
       .get(ENDPOINT)
       .then((res) => {
+        console.log(1, "ENDPOINT => ", ENDPOINT);
         // if res.data is a string then use a test data fakeVideosArr
-        if (typeof res.data === "string") return setVideos(fakeVideosArr);
-
+        if (typeof res.data === "string") {
+          console.log(2, "res.data => ", res.data);
+          return setVideos(fakeVideosArr);
+        }
+        console.log(2, "res.data => ", res.data);
         setVideos(
           res.data.videos.map((video: string) => ({
             id: video,
@@ -51,7 +55,7 @@ function App() {
         console.log("err =>", err);
         setVideos(fakeVideosArr);
       });
-  }, [videos.length, setVideos]);
+  }, []);
 
   const produceVideo = () => {
     const dataForBackend = videos.filter((video) => video.active !== false);
