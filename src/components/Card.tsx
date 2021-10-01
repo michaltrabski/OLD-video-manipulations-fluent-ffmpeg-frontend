@@ -49,21 +49,7 @@ export default function Card(props: Props) {
         duplicateVideo={props.duplicateVideo}
         toogleActive={props.toogleActive}
       />
-      {/* <CardMedia
-        component="video"
-        //   alt="Contemplative Reptile"
-        //   height="140"
-        image={props.video.src}
-        //   title="Contemplative Reptile"
-        controls
-      /> */}
       <CardContent>
-        {/* <Typography gutterBottom variant="h5" component="h2">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {props.video.src}
-        </Typography> */}
         {props.video.duration && (
           <TrimSlider
             video={props.video}
@@ -73,8 +59,6 @@ export default function Card(props: Props) {
           />
         )}
       </CardContent>
-      {/* <pre>{JSON.stringify(props.video, null, 2)}</pre> */}
-
       <CardActions>
         <strong>{props.i + 1}</strong>
         <Button

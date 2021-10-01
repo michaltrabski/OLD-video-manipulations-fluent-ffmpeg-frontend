@@ -19,8 +19,7 @@ type Cols = 1 | 2 | 3 | 4 | 6 | 12;
 function App() {
   const classes = useStyles();
   const [hideTrimSliderInfo, setHideTrimSliderInfo] = useState(true);
-  const [limit, setLimit] = useState(1000); // it makes roblem => videos that are not loaded direcly doesnt get durations.
-  const cols: Cols[] = [1, 2, 3, 4, 6, 12];
+ const cols: Cols[] = [1, 2, 3, 4, 6, 12];
   const [col, setCol] = useLocalStorage<Cols>("col", cols[3]);
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
 
@@ -55,12 +54,6 @@ function App() {
 
   const produceVideo = () => {
     const dataForBackend = videos.filter((video) => video.active !== false);
-    // .map((video) => ({
-    //   id: video.id,
-    //   name: video.name,
-    //   trimStart: video.trimStart,
-    //   trimStop: video.trimStop,
-    // }));
     console.log("sending data => ", dataForBackend);
     axios
       .post(ENDPOINT, dataForBackend)
@@ -163,6 +156,15 @@ function App() {
     document.location.reload();
   };
 
+    const convertToMp3 = () => {
+    const dataForBackend = videos.filter((video) => video.active !== false);
+    console.log("sending data => ", dataForBackend);
+    axios
+      .post(ENDPOINT + "convertToMp3", dataForBackend)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <CssBaseline />
@@ -173,7 +175,18 @@ function App() {
       />
 
       <Container>
-        {/* <pre>{JSON.stringify(videos, null, 2)}</pre> */}
+
+        <Box mt={1} mb={1}>
+          <Button
+              className={classes.mr}
+              variant="contained"
+              color="primary"
+              onClick={convertToMp3}
+            >
+           convertToMp3
+            </Button>
+        </Box>
+
         <Box mt={1} mb={1}>
           {cols.map((c) => (
             <Button
@@ -190,7 +203,7 @@ function App() {
         <Box mt={0} mb={120}>
           <Grid container spacing={1}>
             {videos.length > 0
-              ? videos.slice(0, limit).map((video, i) => (
+              ? videos.map((video, i) => (
                   <Grid
                     key={video.id}
                     item
@@ -219,18 +232,6 @@ function App() {
                 ))
               : "Waiting for response from: http://localhost:3000/"}
           </Grid>
-
-          {videos.length > limit && (
-            <Box mt={1}>
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => setLimit((p) => p + 10)}
-              >
-                Load more videos from {videos.length} {limit}
-              </Button>
-            </Box>
-          )}
         </Box>
       </Container>
     </>
