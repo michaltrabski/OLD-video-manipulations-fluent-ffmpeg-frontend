@@ -10,6 +10,11 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { fakeVideosArr, videoShema } from "./data/data";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
+import { rnd } from "./utils/utils";
+import audio from "./mp3/text.mp3";
+import SpeachToText from "./components/SpeachToText";
+
+// const audio = require("./mp3/text.mp3");
 const { v4: uuidv4 } = require("uuid");
 
 const ENDPOINT = "http://localhost:3000/";
@@ -19,14 +24,15 @@ type Cols = 1 | 2 | 3 | 4 | 6 | 12;
 function App() {
   const classes = useStyles();
   const [hideTrimSliderInfo, setHideTrimSliderInfo] = useState(true);
- const cols: Cols[] = [1, 2, 3, 4, 6, 12];
+  const cols: Cols[] = [1, 2, 3, 4, 6, 12];
   const [col, setCol] = useLocalStorage<Cols>("col", cols[3]);
   const [videos, setVideos] = useLocalStorage<Video[]>("videos", []);
-
+  console.log(33333, videos);
   useEffect(() => {
     // if there are video dont make request to not to override those from local storage
+    console.log(1111, videos);
     if (videos.length > 0) return;
-
+    console.log(2222, videos);
     axios
       .get(ENDPOINT)
       .then((res) => {
@@ -156,13 +162,43 @@ function App() {
     document.location.reload();
   };
 
-    const convertToMp3 = () => {
+  const convertToMp3 = () => {
     const dataForBackend = videos.filter((video) => video.active !== false);
     console.log("sending data => ", dataForBackend);
     axios
       .post(ENDPOINT + "convertToMp3", dataForBackend)
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
+  };
+
+  const createShortVideo = (min_lenght: number, max_lenght: number) => {
+    const trimmedVideos = videos.map((video) => {
+      const newVideo = { ...video };
+      const { duration } = video;
+
+      const condition1 = duration > 12 && duration < 16;
+
+      if (condition1) {
+        const center = duration / 2;
+
+        for (let i = 0; i < 101; i++) {
+          const random = rnd(min_lenght * 10, max_lenght * 10) / 10;
+          const start = parseFloat((center - random / 2).toFixed(1));
+          const stop = parseFloat((center + random / 2).toFixed(1));
+          console.log("xx", parseFloat((stop - start).toFixed(1)));
+        }
+        const random = rnd(min_lenght * 10, max_lenght * 10) / 10;
+        const start = parseFloat((center - random).toFixed(1));
+        const stop = parseFloat((center + random).toFixed(1));
+        newVideo.trimStart = start;
+        newVideo.trimStop = stop;
+      }
+
+      return newVideo;
+    });
+
+    setVideos(trimmedVideos);
+    // document.location.reload();
   };
 
   return (
@@ -175,21 +211,38 @@ function App() {
       />
 
       <Container>
+        <Box mt={1} mb={1}>
+          <Box>
+            <audio controls src={audio}></audio>
+          </Box>
+          <Box>
+            <SpeachToText videos={videos} />
+          </Box>
+        </Box>
 
         <Box mt={1} mb={1}>
           <Button
-              className={classes.mr}
-              variant="contained"
-              color="primary"
-              onClick={convertToMp3}
-            >
-           convertToMp3
-            </Button>
+            className={classes.mr}
+            variant="contained"
+            color="primary"
+            onClick={convertToMp3}
+          >
+            convertToMp3
+          </Button>
+          <Button
+            className={classes.mr}
+            variant="contained"
+            color="primary"
+            onClick={() => createShortVideo(100, 103)}
+          >
+            createShortVideo5sek
+          </Button>
         </Box>
 
         <Box mt={1} mb={1}>
           {cols.map((c) => (
             <Button
+              key={c}
               className={classes.mr}
               variant="contained"
               color={c === col ? "primary" : "default"}

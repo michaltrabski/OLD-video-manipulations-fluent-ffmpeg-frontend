@@ -98,36 +98,8 @@ export default function Player(props: Props) {
         className={classes.videoWrapper}
       >
         {videoElement}
-
-        {/* <Box className={classes.videoHead}>
-          <Typography
-            style={{ marginBottom: 0 }}
-            variant="h4"
-            component="h2"
-            gutterBottom
-            display="inline"
-          >
-            {i + 1}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => duplicateVideo(video.id)}
-          >
-            Duplicate
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => toogleActive(video.id)}
-          >
-            Toogle Active
-          </Button>
-        </Box> */}
       </Box>
-      {/* <pre>{JSON.stringify(video, null, 2)}</pre> */}
+      <pre>{JSON.stringify(video, null, 2)}</pre>
     </>
   );
 }
